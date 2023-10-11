@@ -1,14 +1,41 @@
+# Importing necessary libraries
 from airflow import DAG
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
-from airflow.providers.google.cloud.operators.bigquery import (
-    BigQueryCreateEmptyDatasetOperator,
-    BigQueryCreateEmptyTableOperator,
-    BigQueryDeleteTableOperator,
-)
-from airflow.operators.python import PythonOperator
+from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateEmptyDatasetOperator
 from airflow.utils.dates import days_ago
-from google.cloud import storage
-import json
+
+
+# Task 1
+# Define your variables (project_id, dataset_name, table_name, gcs_bucket)
+# Your code starts here
+
+schema_fileds = [
+    {"name": "INCIDENT_NUMBER", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "OFFENSE_CODE", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name": "OFFENSE_CODE_GROUP", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "OFFENSE_CODE_GROUP_No", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name": "OFFENSE_DESCRIPTION", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "DISTRICT", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "District_simple", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "District_simple_No", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name": "REPORTING_AREA", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name": "OCCURRED_ON_DATE", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "Hour1", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "Start_Night", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "Start_Day", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "Night_Day", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "YEAR", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name": "MONTH", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name": "DAY_OF_WEEK", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "WE_Workday", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "WE_Workday_No", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name": "HOUR", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name": "Counts_per_hour", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name": "STREET", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "Lat", "type": "FLOAT", "mode": "NULLABLE"},
+    {"name": "Long", "type": "FLOAT", "mode": "NULLABLE"},
+    {"name": "Location", "type": "STRING", "mode": "NULLABLE"}
+]
 
 # Define your DAG
 default_args = {
@@ -24,63 +51,27 @@ dag = DAG(
     schedule_interval='@once',
 )
 
-# Your code starts here
-# Define your variables (dataset_name, table_name, gcs_bucket, gcs_schema_object)
-# Your code ends here
-
-# Load schema from GCS to XCom variable using a Python function and PythonOperator
-# Python function to get schema from GCS and push it to XCom
-def get_schema_from_gcs(bucket_name, schema_file_path, **kwargs):
-    pass # Replace pass statement with your code
-    # Your code starts here
-    # Initialize a GCS client
-    # Get the schema file from GCS
-    # Push the schema to XCom
-    # Your code ends here
-
-get_schema = PythonOperator(
-    task_id='get_schema',
-    python_callable=get_schema_from_gcs,  # Reference to the Python function to call
-    # Your code starts here
-    # Define op_args parameter with bucket name and schema file path
-    # Your code ends here
-    provide_context=True,
-    dag=dag,
-)
-
-# Step 1: Check/Create Dataset
+# Task 2: Check/Create Dataset
 create_dataset = BigQueryCreateEmptyDatasetOperator(
     task_id='create_dataset',
     # Your code starts here
-    # Define dataset_id parameter
+    # Define dataset_id and project_id parameters
     # Your code ends here
     dag=dag,
 )
 
-# Step 2: Delete Table (if exists)
-delete_table = BigQueryDeleteTableOperator(
-    task_id='delete_table',
+# Task 3: Load Data
+load_csv = GCSToBigQueryOperator(
+    task_id='load_csv',
     # Your code starts here
-    # Define deletion_dataset_table parameter
-    # Your code ends here
-    ignore_if_missing=True,
-    dag=dag,
-)
-
-# Step 3: Check/Create Table
-create_table = BigQueryCreateEmptyTableOperator(
-    task_id='create_table',
-    # Your code starts here
-    # Define dataset_id, table_id, and schema_fields parameters
+    # Define bucket, source_objects, destination_project_dataset_table,
+    # skip_leading_rows, write_disposition, field_delimiter, 
+    # and schema_fields parameters
     # Your code ends here
     dag=dag,
 )
 
-# Step 4: Load Data
+# Task 4: Define the task dependencies
 # Your code starts here
-# Task 2: Define the load_csv operator using GCSToBigQueryOperator.
-# Your code ends here
-
-# Your code starts here
-# Task 3: Define the task dependencies to ensure tasks run in the correct order.
+# Set the order of tasks
 # Your code ends here
