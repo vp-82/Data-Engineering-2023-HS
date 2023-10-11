@@ -127,16 +127,37 @@ create_dataset = BigQueryCreateEmptyDatasetOperator(
 
 #### Hints (3)
 
-Use `GoogleCloudStorageToVariableOperator` to load the schema from GCS and store it in an XCom variable.
+Define a Python Function**: Create a function named `get_schema_from_gcs` to interact with Google Cloud Storage, retrieve the schema, and push it to XCom.
 
 ```python
-load_schema = GoogleCloudStorageToVariableOperator(
-    task_id='load_schema',
-    bucket=gcs_bucket,  # use the variable defined in Task 1
-    object_name=gcs_schema_object,  # use the variable defined in Task 1
-    variable_name='schema',
-    dag=dag,
-)
+   def get_schema_from_gcs(bucket_name, schema_file_path, **kwargs):
+       from google.cloud import storage
+       import json
+   
+       # Initialize a GCS client
+       storage_client = storage.Client()
+       bucket = storage_client.bucket(bucket_name)
+   
+       # Get the schema file from GCS
+       blob = bucket.blob(schema_file_path)
+       schema_json = blob.download_as_text()
+   
+       # Push the schema to XCom
+       kwargs['task_instance'].xcom_push(key='schema', value=json.loads(schema_json))
+```
+
+Use Python Operator**: Implement a `PythonOperator` to execute your Python function within your DAG. Ensure you provide the necessary arguments and enable context.
+
+```python
+   from airflow.operators.python import PythonOperator
+   
+   get_schema = PythonOperator(
+       task_id='get_schema',
+       python_callable=get_schema_from_gcs,
+       op_args=['your_gcs_bucket_name', 'path_to_your_schema.json'],
+       provide_context=True,
+       dag=dag,
+   )
 ```
 
 ### Task 4: Delete Table (if exists)

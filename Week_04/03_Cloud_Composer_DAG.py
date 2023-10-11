@@ -1,12 +1,14 @@
 from airflow import DAG
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 from airflow.providers.google.cloud.operators.bigquery import (
     BigQueryCreateEmptyDatasetOperator,
-    BigQueryDeleteTableOperator,
     BigQueryCreateEmptyTableOperator,
+    BigQueryDeleteTableOperator,
 )
-from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
-from airflow.providers.google.cloud.transfers.gcs_to_variable import GoogleCloudStorageToVariableOperator
+from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
+from google.cloud import storage
+import json
 
 # Define your DAG
 default_args = {
@@ -26,13 +28,23 @@ dag = DAG(
 # Define your variables (dataset_name, table_name, gcs_bucket, gcs_schema_object)
 # Your code ends here
 
-# Load schema from GCS to XCom variable
-load_schema_to_xcom = GoogleCloudStorageToVariableOperator(
-    task_id='load_schema_to_xcom',
+# Load schema from GCS to XCom variable using a Python function and PythonOperator
+# Python function to get schema from GCS and push it to XCom
+def get_schema_from_gcs(bucket_name, schema_file_path, **kwargs):
+    pass # Replace pass statement with your code
     # Your code starts here
-    # Define bucket and object_name parameters
+    # Initialize a GCS client
+    # Get the schema file from GCS
+    # Push the schema to XCom
     # Your code ends here
-    variable_name='schema',
+
+get_schema = PythonOperator(
+    task_id='get_schema',
+    python_callable=get_schema_from_gcs,  # Reference to the Python function to call
+    # Your code starts here
+    # Define op_args parameter with bucket name and schema file path
+    # Your code ends here
+    provide_context=True,
     dag=dag,
 )
 

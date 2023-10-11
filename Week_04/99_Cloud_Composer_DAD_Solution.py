@@ -1,12 +1,14 @@
 from airflow import DAG
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 from airflow.providers.google.cloud.operators.bigquery import (
     BigQueryCreateEmptyDatasetOperator,
-    BigQueryDeleteTableOperator,
     BigQueryCreateEmptyTableOperator,
+    BigQueryDeleteTableOperator,
 )
-from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
-from airflow.providers.google.cloud.transfers.gcs_to_variable import GoogleCloudStorageToVariableOperator
+from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
+from google.cloud import storage
+import json
 
 # Define your DAG
 default_args = {
@@ -28,12 +30,24 @@ table_name = 'crime_data'
 gcs_bucket = 'your_gcs_bucket_name'
 gcs_schema_object = 'path_to_your_schema/crime_data_schema.json'
 
-# Load schema from GCS to XCom variable
-load_schema_to_xcom = GoogleCloudStorageToVariableOperator(
-    task_id='load_schema_to_xcom',
-    bucket=gcs_bucket,
-    object_name=gcs_schema_object,
-    variable_name='schema',
+def get_schema_from_gcs(bucket_name, schema_file_path, **kwargs):
+    # Initialize a GCS client
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+
+    # Get the schema file from GCS
+    blob = bucket.blob(schema_file_path)
+    schema_json = blob.download_as_text()
+
+    # Push the schema to XCom
+    kwargs['task_instance'].xcom_push(key='schema', value=json.loads(schema_json))
+
+# Use PythonOperator in your DAG
+get_schema = PythonOperator(
+    task_id='get_schema',
+    python_callable=get_schema_from_gcs,
+    op_args=['your_gcs_bucket_name', 'path_to_schema_file_in_gcs'],
+    provide_context=True,
     dag=dag,
 )
 
@@ -75,4 +89,5 @@ load_csv = GCSToBigQueryOperator(
 )
 
 # Define the task dependencies
-create_dataset >> load_schema_to_xcom >> delete_table >> create_table >> load_csv
+create_dataset >> get_schema >> delete_table >> create_table >> load_csv
+
