@@ -23,7 +23,7 @@ jobs:
       run: |
         for markdown_file in $(find . -name "*.md"); do
           pdf_file="${markdown_file%.md}.pdf"
-          pandoc -V geometry:"left=1cm, top=1cm, right=1cm, bottom=2cm" -V fontsize=12pt "$markdown_file" -s -o "$pdf_file" --pdf-engine=xelatex --template=templates/custom-template.tex
+          pandoc -V geometry:"left=1cm, top=1cm, right=1cm, bottom=2cm" -V fontsize=12pt "$markdown_file" -s -o "$pdf_file" --pdf-engine=xelatex --template=$(pwd)/templates/custom-template.tex
         done
         
     - name: Commit & Push changes
