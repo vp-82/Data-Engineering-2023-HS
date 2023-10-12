@@ -26,9 +26,17 @@ jobs:
           pandoc "$markdown_file" -s -o "$pdf_file" --pdf-engine=xelatex
         done
         
-    - name: Upload PDFs
-      uses: actions/upload-artifact@v2
-      with:
-        name: PDFs
-        path: |
-          *.pdf
+    - name: Configure Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+    - name: Commit PDFs
+      run: |
+        git add *.pdf
+        if git diff --quiet HEAD; then
+          echo "No changes to commit"
+        else
+          git commit -m "Auto-generate PDFs"
+          git push
+        fi
