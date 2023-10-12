@@ -1,0 +1,33 @@
+name: Convert Markdown to PDF
+
+on:
+  push:
+    paths:
+      - '**.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      
+    - name: Install Pandoc and TexLive
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y pandoc texlive-xetex
+        
+    - name: Convert Markdown to PDF
+      run: |
+        for markdown_file in $(find . -name "*.md"); do
+          pdf_file="${markdown_file%.md}.pdf"
+          pandoc "$markdown_file" -s -o "$pdf_file" --pdf-engine=xelatex
+        done
+        
+    - name: Upload PDFs
+      uses: actions/upload-artifact@v2
+      with:
+        name: PDFs
+        path: |
+          *.pdf
