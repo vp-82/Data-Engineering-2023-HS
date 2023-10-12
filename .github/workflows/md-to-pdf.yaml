@@ -1,12 +1,10 @@
 name: Convert Markdown to PDF
 
 on:
-    push:
-      paths:
-        - '**.md'
-      paths-ignore:
-        - '**.pdf'
-    workflow_dispatch:
+  push:
+    paths:
+      - '**.md'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -28,15 +26,18 @@ jobs:
           pandoc "$markdown_file" -s -o "$pdf_file" --pdf-engine=xelatex
         done
         
+    - name: Configure Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
     - name: Commit PDFs
       run: |
         git add *.pdf
         if git diff --quiet HEAD; then
-            echo "No changes to commit"
+          echo "No changes to commit"
         else
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/vp-82/Data-Engineering-2023-HS.git
-            git commit -m "Auto-generate PDFs"
-            git push
+          git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/your-username/your-repo.git
+          git commit -m "Auto-generate PDFs"
+          git push
         fi
