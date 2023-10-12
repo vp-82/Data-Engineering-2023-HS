@@ -37,7 +37,7 @@ jobs:
         if git diff --quiet HEAD; then
           echo "No changes to commit"
         else
-          git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/your-username/your-repo.git
+          git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/vp-82/Data-Engineering-2023-HS/
           git commit -m "Auto-generate PDFs"
           git push
         fi
