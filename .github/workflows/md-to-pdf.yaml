@@ -26,18 +26,7 @@ jobs:
           pandoc "$markdown_file" -s -o "$pdf_file" --pdf-engine=xelatex
         done
         
-    - name: Configure Git
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        
-    - name: Commit PDFs
-      run: |
-        git add *.pdf
-        if git diff --quiet HEAD; then
-          echo "No changes to commit"
-        else
-          git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/vp-82/Data-Engineering-2023-HS/
-          git commit -m "Auto-generate PDFs"
-          git push
-        fi
+    - name: Commit & Push changes
+      uses: actions-js/push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
