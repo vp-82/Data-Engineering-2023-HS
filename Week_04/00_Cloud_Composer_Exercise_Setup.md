@@ -28,7 +28,7 @@ Develop a scalable and automated data pipeline using Apache Airflow to manage th
 ```bash
 # Create a new GCP project
 # Make sure to replace [BILLING_ACCOUNT_ID] with your billing account ID
-gcloud projects create zhaw-data-engineering-2023 --name="ZHAW Data Engineering 2023"
+gcloud projects create zhaw-da-[SHORTNAME]-2023 --name="ZHAW Data Engineering 2023"
 gcloud beta billing projects link zhaw-data-engineering-2023 --billing-account=[BILLING_ACCOUNT_ID]
 
 # Set the GCP project
@@ -51,6 +51,10 @@ gcloud projects add-iam-policy-binding zhaw-data-engineering-2023 --member="serv
 gcloud projects add-iam-policy-binding zhaw-data-engineering-2023 \
     --member="serviceAccount:de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com" \
     --role="roles/bigquery.datasetCreator"
+gcloud projects add-iam-policy-binding [YOUR_PROJECT_ID] \
+    --member="serviceAccount:de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com" \
+    --role="roles/bigquery.admin"
+
 gcloud projects add-iam-policy-binding zhaw-data-engineering-2023 --member="serviceAccount:de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com" --role="roles/storage.objectAdmin"
 
 # Create a GCS bucket

@@ -13,7 +13,7 @@
 ##### 1. Create a new Conda environment and activate it
 
 ```bash
-conda create -n airflow_env python=3.8
+conda create -n airflow_env python=3.11
 conda activate airflow_env
 ```
 
