@@ -18,6 +18,7 @@ jobs:
       run: |
         sudo apt-get install -y pandoc
         sudo apt install -y texlive-xetex
+        sudo apt-get install -y texlive-fonts-recommended texlive-fonts-extra
         
     - name: Convert Markdown to PDF
       run: |
