@@ -6,7 +6,7 @@ Develop a scalable and automated data pipeline using Apache Airflow to manage th
 
 ## Setup Guidelines
 
-Refer to the setup guide provided in `01_Cloud_Composer_Exercise_Setup.md` for instructions on setting up your GCP environment.
+Refer to the setup guide provided in `01_Cloud_Composer_Exercise_Setup.md` for instructions on setting up your GCP environment. You can use the file `03_Cloud_Composer_DAG.py` and edit it using the hints below. You can find the solution in `/Solution/03_Cloud_Composer_DAG.py`
 
 ## DAG Skeleton
 
@@ -27,7 +27,7 @@ from airflow.utils.dates import days_ago
 # Your code starts here
 
 # Task 1: Define the Variables
-# HINT: Define your variables (dataset_name, table_name, gcs_bucket, gcs_schema_object) using the given hints in the task description.
+# HINT: Define your variables (dataset_name, table_name, gcs_bucket) using the given hints in the task description.
 
 schema_fileds = [
     {"name": "INCIDENT_NUMBER", "type": "STRING", "mode": "NULLABLE"},
@@ -93,10 +93,9 @@ load_data = GCSToBigQueryOperator(
 Define variables that will be used to specify dataset names, table names, GCS bucket names, and GCS schema object paths.
 
 ```python
-dataset_name = 'your_dataset_name'
-table_name = 'your_table_name'
-gcs_bucket = 'your_gcs_bucket_name'
-gcs_schema_object = 'path_to_your_schema.json'
+dataset_name = '[your_dataset_name]'
+table_name = '[your_table_name]'
+gcs_bucket = '[your_gcs_bucket_name]'
 ```
 
 ### Task 2: Check/Create Dataset
@@ -123,7 +122,7 @@ Use `GCSToBigQueryOperator` to load data from GCS to BigQuery.
 load_csv = GCSToBigQueryOperator(
     task_id='load_csv',
     bucket=gcs_bucket,  # use the variable defined in Task 1
-    source_objects=['data_file1.csv', 'data_file2.csv'],  # specify your source data files
+    source_objects=['[data_file1.csv]', '[data_file2.csv]'],  # specify your source data files
     destination_project_dataset_table=f"{dataset_name}.{table_name}",  # use variables defined in Task 1
     skip_leading_rows=1,  # adjust as per your data
     write_disposition='WRITE_TRUNCATE',  # adjust as needed
@@ -141,11 +140,5 @@ Use the bitshift operators (>>, <<) or `set_downstream` and `set_upstream` metho
 
 ```python
 # Using bitshift operators
-create_dataset >> load_schema >> delete_table >> create_table >> load_data
-
-# OR using set_downstream and set_upstream methods
-create_dataset.set_downstream(load_schema)
-load_schema.set_downstream(delete_table)
-delete_table.set_downstream(create_table)
-create_table.set_downstream(load_data)
+create_dataset >> load_csv
 ```

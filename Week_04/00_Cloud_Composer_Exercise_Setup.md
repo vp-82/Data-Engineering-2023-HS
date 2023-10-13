@@ -28,11 +28,12 @@ Develop a scalable and automated data pipeline using Apache Airflow to manage th
 ```bash
 # Create a new GCP project
 # Make sure to replace [BILLING_ACCOUNT_ID] with your billing account ID
-gcloud projects create zhaw-da-[SHORTNAME]-2023 --name="ZHAW Data Engineering 2023"
+$PROJECTID = "zhaw-da-[SHORTNAME]-2023"
+gcloud projects create $PROJECTID --name="ZHAW Data Engineering 2023"
 gcloud beta billing projects link zhaw-data-engineering-2023 --billing-account=[BILLING_ACCOUNT_ID]
 
 # Set the GCP project
-gcloud config set project zhaw-data-engineering-2023
+gcloud config set project $PROJECTID
 
 # Enable necessary APIs
 gcloud services enable bigquery.googleapis.com
@@ -46,20 +47,18 @@ gcloud iam service-accounts create de-2023-service-account --display-name "Data 
 gcloud iam service-accounts keys create de-2023-service-account-key.json --iam-account de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com
 
 # Assign roles to the service account
-gcloud projects add-iam-policy-binding zhaw-data-engineering-2023 --member="serviceAccount:de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com" --role="roles/bigquery.user"
-gcloud projects add-iam-policy-binding zhaw-data-engineering-2023 --member="serviceAccount:de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com" --role="roles/bigquery.dataEditor"
-gcloud projects add-iam-policy-binding zhaw-data-engineering-2023 \
-    --member="serviceAccount:de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com" \
-    --role="roles/bigquery.datasetCreator"
-gcloud projects add-iam-policy-binding [YOUR_PROJECT_ID] \
+gcloud projects add-iam-policy-binding $PROJECTID --member="serviceAccount:de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com" --role="roles/bigquery.user"
+gcloud projects add-iam-policy-binding $PROJECTID --member="serviceAccount:de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com" --role="roles/bigquery.dataEditor"
+gcloud projects add-iam-policy-binding $PROJECTID \
     --member="serviceAccount:de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com" \
     --role="roles/bigquery.admin"
 
-gcloud projects add-iam-policy-binding zhaw-data-engineering-2023 --member="serviceAccount:de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com" --role="roles/storage.objectAdmin"
+gcloud projects add-iam-policy-binding $PROJECTID --member="serviceAccount:de-2023-service-account@zhaw-data-engineering-2023.iam.gserviceaccount.com" --role="roles/storage.objectAdmin"
 
 # Create a GCS bucket
 # Make sure to replace [SHORTNAME] with your unique short name
-gsutil mb -p zhaw-data-engineering-2023 -l europe-west6 gs://zhaw-de-2023-[SHORTNAME]-data-bucket/
+BUCKET="zhaw-de-2023-[SHORTNAME]-data-bucket/"
+gsutil mb -p $PROJECTID -l europe-west6 gs://$BUCKET
 
 # Uploading Files to Cloud Shell: 
 # Before using the gsutil cp commands, make sure your files (crime_robbery.csv, crime_burglary.csv, 
@@ -70,20 +69,18 @@ gsutil mb -p zhaw-data-engineering-2023 -l europe-west6 gs://zhaw-de-2023-[SHORT
 # After you have uploaded your files to Cloud Shell, use the following commands to move them to your GCS bucket.
 
 # Make sure to replace [SHORTNAME] with your unique short name
-gsutil cp crime_robbery.csv gs://zhaw-de-2023-[SHORTNAME]-data-bucket/
-gsutil cp crime_burglary.csv gs://zhaw-de-2023-[SHORTNAME]-data-bucket/
-
-# (Optional) Upload schema file to the GCS bucket
-gsutil cp schema.json gs://zhaw-de-2023-[SHORTNAME]-data-bucket/
+gsutil cp crime_robbery.csv gs://$BUCKET
+gsutil cp crime_burglary.csv gs://$BUCKET
 
 # Grant required permissions to Cloud Composer service account
-gcloud projects add-iam-policy-binding [YOUR_PROJECT_ID] \
-    --member=serviceAccount:service-[YOUR_PROJECT_NUMBER]@cloudcomposer-accounts.iam.gserviceaccount.com \
+PROJECTNUMBER="[YOUR PROJECT NUMBER]"
+gcloud projects add-iam-policy-binding $PROJECTID \
+    --member=serviceAccount:service-$PROJECTNUMBER@cloudcomposer-accounts.iam.gserviceaccount.com \
     --role=roles/composer.admin
 
 # Grant required permissions to Cloud Composer service account
-gcloud projects add-iam-policy-binding [YOUR_PROJECT_ID] \
-    --member=serviceAccount:service-[YOUR_PROJECT_NUMBER]@cloudcomposer-accounts.iam.gserviceaccount.com \
+gcloud projects add-iam-policy-binding $PROJECTID \
+    --member=serviceAccount:service-$PROJECTNUMBER@cloudcomposer-accounts.iam.gserviceaccount.com \
     --role roles/composer.ServiceAgentV2Ext
 
 
@@ -98,5 +95,5 @@ gcloud composer environments create de-2023-airflow-env \
     --worker-memory="4G" \
     --min-workers=1 \
     --max-workers=2
-    --service-account "serviceAccount:service-[YOUR_PROJECT_NUMBER]@cloudcomposer-accounts.iam.gserviceaccount.com"
+    --service-account "serviceAccount:service-$PROJECTNUMBER@cloudcomposer-accounts.iam.gserviceaccount.com"
 ```

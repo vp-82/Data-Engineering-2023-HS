@@ -21,11 +21,10 @@ dag = DAG(
 )
 
 # Define your variables
-project_id = 'zhaw-data-engineering-2023'
+project_id = '[YOUR PROJECT ID]'
 dataset_name = 'crime_dataset'
 table_name = 'crime_data'
-gcs_bucket = 'zhaw-de-2023-pect-data-bucket'
-gcs_schema_object = 'schema.json'
+gcs_bucket = '[YOUR BUCKET]'
 schema_fileds = [
     {"name": "INCIDENT_NUMBER", "type": "STRING", "mode": "NULLABLE"},
     {"name": "OFFENSE_CODE", "type": "INTEGER", "mode": "NULLABLE"},

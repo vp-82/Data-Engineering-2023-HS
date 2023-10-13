@@ -23,7 +23,7 @@ conda activate airflow_env
 pip install apache-airflow[google]
 ```
 
-##### 3. Verify the installation by running `airflow` in the terminal. You should see the airflow command’s help output
+##### 3. Verify the installation by running `airflow` in the terminal. You should see the airflow command’s help output.
 
 #### Task 2: Initialize Apache Airflow
 
@@ -35,13 +35,13 @@ pip install apache-airflow[google]
 airflow db init
 ```
 
-##### 2. Open the `airflow.cfg` in a text editor. You might need to adjust the `dags_folder` and `base_log_folder` to your project directory. Make sure to use absolute paths
+##### 2. Open the `airflow.cfg` in a text editor. You might need to adjust the `dags_folder` and `base_log_folder` to your project directory. The `airflow.cfg` is located in your home directory, e.g. `~/airflow/airflow.cfg`Make sure to use absolute paths to your project directory. The path has to be the same for all DAGs.
 
 #### Task 3: Authenticate with GCP
 
 #### Hints (3)
 
-##### 1. Activate the service account using `gcloud`
+##### 1. Activate the service account using `gcloud`. Download the key-file from your Google Cloud Shell. You can use the key-file you created in the from the previous exercise.
 
 ```bash
 gcloud auth activate-service-account --key-file=PATH_TO_YOUR_KEY_FILE
