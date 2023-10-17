@@ -11,17 +11,15 @@
 **SQL Example**:
 
 ```sql
-CREATE OR REPLACE TABLE your_project_id.your_dataset.new_wide_table AS
-SELECT 
-    a.*,
-    b.code_group,
-    b.code_group_description
-FROM 
-    your_project_id.your_dataset.crime_data a
-JOIN
-    your_project_id.your_dataset.crimecode b
-ON
-    a.OFFENSE_CODE_GROUP = b.code;
+SELECT
+    EXTRACT(HOUR FROM PARSE_TIMESTAMP('%d.%m.%Y %H:%M', OCCURRED_ON_DATE)) as hour,
+    COUNT(*) as num_incidents
+FROM
+    `crime_dataset.crime_data`
+GROUP BY
+    hour
+ORDER BY
+    hour;
 ```
 
 **Note**: 
