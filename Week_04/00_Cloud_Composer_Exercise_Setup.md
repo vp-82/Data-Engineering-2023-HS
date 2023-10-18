@@ -85,15 +85,15 @@ gcloud projects add-iam-policy-binding $PROJECTID \
 
 
 # Create a Cloud Composer environment (optional)
-gcloud composer environments create de-2023-airflow-env \
-    --location=europe-west6 \
-    --image-version=composer-2.4.5-airflow-2.5.3 \
-    --environment-size=small \
-    --scheduler-cpu=1 \
-    --scheduler-memory="4G" \
-    --worker-cpu=1 \
-    --worker-memory="4G" \
-    --min-workers=1 \
-    --max-workers=2
+gcloud composer environments create de-2023-airflow-env
+--location=europe-west6
+--image-version=composer-2.4.5-airflow-2.5.3
+--environment-size=small
+--scheduler-cpu=0.5
+--scheduler-memory="2G"
+--worker-cpu=0.5
+--worker-memory="1G"
+--min-workers=1
+--max-workers=2
     --service-account "serviceAccount:service-$PROJECTNUMBER@cloudcomposer-accounts.iam.gserviceaccount.com"
 ```

@@ -1,10 +1,13 @@
+import json
+
 from airflow import DAG
-from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
-from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateEmptyDatasetOperator
 from airflow.operators.python import PythonOperator
+from airflow.providers.google.cloud.operators.bigquery import \
+    BigQueryCreateEmptyDatasetOperator
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import \
+    GCSToBigQueryOperator
 from airflow.utils.dates import days_ago
 from google.cloud import storage
-import json
 
 # Define your DAG
 default_args = {
@@ -21,7 +24,6 @@ dag = DAG(
 )
 
 # Define your variables
-project_id = '[YOUR PROJECT ID]'
 dataset_name = 'crime_dataset'
 table_name = 'crime_data'
 gcs_bucket = '[YOUR BUCKET]'

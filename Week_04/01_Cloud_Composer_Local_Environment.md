@@ -44,7 +44,7 @@ airflow db init
 ##### 1. Activate the service account using `gcloud`. Download the key-file from your Google Cloud Shell. You can use the key-file you created in the from the previous exercise.
 
 ```bash
-gcloud auth activate-service-account --key-file=PATH_TO_YOUR_KEY_FILE
+gcloud auth application-default login
 ```
 
 ##### 2. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable in your shell profile (.bashrc, .zshrc, etc.) or in the VSCode terminal
