@@ -60,7 +60,7 @@ In this exercise, you'll set up a Cloud SQL instance, import a database dump, an
 
 8. **Grant the ServiceAccount permissions to access the bucket**:
     ```bash
-    gsutil iam ch [YOUR SERVICE ACCOUNT]:objectViewer gs://[YOUR BUCKET]
+    gsutil iam ch [YOUR SERVICE ACCOUNT]:objectAdmin gs://[YOUR BUCKET]
     ```
 
 9. **Assign the required IAM role to the ServiceAccount**:
