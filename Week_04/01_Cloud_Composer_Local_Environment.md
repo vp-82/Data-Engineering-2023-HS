@@ -53,7 +53,7 @@ gcloud auth application-default login
 export GOOGLE_APPLICATION_CREDENTIALS="PATH_TO_YOUR_KEY_FILE"
 ```
 
-##### 3. Verify the authentication by running a gcloud command, e.g., `gcloud projects list`
+##### 3. Verify the authentication by running a gcloud command, e.g., `gcloud projects list` `gcloud auth list`
 
 #### Task 4: Test Your DAG Locally
 

@@ -47,8 +47,6 @@ gcloud pubsub topics create $TOPIC_NAME
 
 After creating the Cloud Scheduler jobs, navigate to the [Cloud Scheduler](https://console.cloud.google.com/cloudscheduler) section of the Google Cloud Console to verify that the jobs have been created successfully.
 
-Instructions: Ensure that you see two jobs listed: positive-ratings-publisher and negative-ratings-publisher. Check that their schedules and configurations are correct.
-
 3. **Run the Cloud Scheduler Job Manually**
 
 ```bash
@@ -67,6 +65,8 @@ gcloud scheduler jobs run --location=$LOCATION positive-ratings-publisher
     ```
 
     - **Description**: This command creates another Cloud Scheduler job that publishes a negative review message to the Pub/Sub topic every two minutes.
+  
+Instructions: Ensure that you see two jobs listed: positive-ratings-publisher and negative-ratings-publisher. Check that their schedules and configurations are correct.
 
 ## Part 3: Setting Up BigQuery
 
